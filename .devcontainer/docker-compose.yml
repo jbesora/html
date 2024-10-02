@@ -1,0 +1,59 @@
+services:
+  php-apache:
+    image: php:apache
+    container_name: php-apache
+    volumes:
+      - ../:/var/www/html
+    ports:
+      - "80:80"
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+    networks:
+      - daw-network
+    command: /bin/bash -c "
+      apt-get update && 
+      apt-get install -y git libpng-dev libjpeg-dev default-jre python3 python3-pip && 
+      docker-php-ext-install mysqli && 
+      docker-php-ext-enable mysqli && 
+      git clone https://github.com/caspero94/DAW.git /var/www/temp_repo &&
+      rm -rf /var/www/temp_repo/.git &&
+      cp -r /var/www/temp_repo/. /var/www/html/ &&
+      rm -rf /var/www/temp_repo &&
+      apache2-foreground"
+  
+  mysql:
+    image: mysql
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dawdb
+      MYSQL_PASSWORD: daw
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - daw-network
+
+  phpmyadmin:
+    image: phpmyadmin:apache
+    depends_on:
+      - mysql
+      - php-apache
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: daw
+    ports:
+      - "8080:80"
+    networks:
+      - daw-network
+
+networks:
+  daw-network:
+    driver: bridge
+  
+volumes:
+  mysql:

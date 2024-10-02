@@ -1,0 +1,19 @@
+{   
+    "name": "DAW/DAM DEV",
+    "secrets": {"VERSION":{"description": "0.1.1"}},
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "php-apache",
+    "workspaceFolder": "/var/www/html",
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+        "ms-python.python",
+        "bmewburn.vscode-intelephense-client",
+        "ecmel.vscode-html-css",
+        "vscjava.vscode-java-pack",
+        "xabikos.JavaScriptSnippets"
+    ],
+    "remoteUser": "root",
+    "shutdownAction": "stopCompose"
+}
